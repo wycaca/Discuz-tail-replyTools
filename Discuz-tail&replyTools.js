@@ -3,7 +3,8 @@
 // @name:zh-CN     Discuz论坛小尾巴+快捷回复
 // @author         Yulei,wycaca
 // @namespace      Discuz-tail&replyTools
-// @description    Very Good Tail.Hello!
+// @description    Discuz Tail $ reply tool
+// @description:zh-cn    Discuz小尾巴和快捷回复工具
 // @version        1.0
 // @create         2013-01-19
 // @lastmodified   2019-02-16
