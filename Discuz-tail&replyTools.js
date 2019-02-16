@@ -1,16 +1,18 @@
 // ==UserScript==
-// @name           Good Tail
-// @author         Yulei
-// @namespace      Yuleigq@gmail.com
+// @name           Discuz-tail&replyTools
+// @name:zh-CN     Discuz论坛小尾巴+快捷回复
+// @author         Yulei,wycaca
+// @namespace      Discuz-tail&replyTools
 // @description    Very Good Tail.Hello!
-// @version        2.01.29
+// @version        1.0
 // @create         2013-01-19
-// @lastmodified   2013-09-29
+// @lastmodified   2019-02-16
 // @include        http*/thread*
 // @include        http*forum.php?mod=viewthread&tid=*
 // @include        http*forum.php?mod=post&action=reply&fid=*
-// @include        http://*/forum.php?mod=post&action=newthread&fid=*
+// @include        http*forum.php?mod=post&action=newthread&fid=*
 // @copyright      2013+, Yulei
+// @copyright      2019+, wycaca
 // ==/UserScript==
 
 (function () {
@@ -38,10 +40,8 @@
                 //插入尾巴
                 function MUA(P) { //Custom 为自定尾巴信息，各喜好修改！
                     var Custom = '[list][/list][float=left]\r\r\r[color=FFFFCC]\
-藏起来的小尾巴,不让你看! \ ';
+					藏起来的小尾巴,不让你看! \ ';
                     //\r——'+ Gtl +'[/color][/size]         [/float]
-
-
                     P.value = w.parseurl(P.value) + Custom;
                 }
                 var Gtl = w.getcookie("GTL") ? w.getcookie("GTL") : "";
@@ -49,9 +49,9 @@
                 //截获提交
                 function gform(pos) { //fm
                     pos.onsubmit = function () {
-                        if ($('mUA').checked) {
-                            MUA(pos.message);
-                        }
+                        // if ($('mUA').checked) {
+                        MUA(pos.message);
+                        // }
                         return w.validate(this);
                     }
                 }
@@ -66,9 +66,9 @@
                     PS.onkeydown = function (event) {
                         if ((event.ctrlKey && event.keyCode == 13 || event.altKey && event.keyCode == 83) || (event.altKey && event.keyCode == 83)) {
                             if (!fwin) {
-                                if ($('mUA').checked) {
-                                    MUA(PS);
-                                }
+                                // if ($('mUA').checked) {
+                                MUA(PS);
+                                // }
                             }
                             if (Psfm) {
                                 w.ctlent(event)
@@ -81,28 +81,51 @@
                     }
                 }
                 //创建选项
-                var Sts = document.createElement("style");
-                Sts.type = "text/css";
-                Sts.textContent = "#mUA{ \
-margin-top:5px;border:1px solid #f6f;color:red;outline:1px solid #f6f; \
-animation:yu 6s -1 alternate;} \
-@keyframes yu{0%{background:red} 35%{background:yellow}} ";
-                document.head.appendChild(Sts);
-                var Bos = document.createElement("input");
+                var style = document.createElement("style");
+                style.type = "text/css";
+                style.textContent = "#mUA{ \
+				margin-top:5px;border:1px solid #f6f;color:red;outline:1px solid #f6f;";
+                document.head.appendChild(style);
+                var Bos = document.createElement("SELECT");
                 Bos.id = "mUA";
-                Bos.type = "checkbox";
-                Bos.title = "加入签名(尾巴);双击设置哦";
-                Bos.checked = true;
-                if (bar) {
-                    bar.appendChild(Bos);
-                    mess(pos.message)
-                };
-                if ($('mUA')) {
-                    $('mUA').ondblclick = function () {
-                        var Gin = '<input type="text" id="GIN" value="' + Gtl + '" /> <input type="button" value="设置" onclick="setcookie(\'GTL\',$(\'GIN\').value,\'31536000\');hideMenu(\'fwin_dialog\',\'dialog\')" />';
-                        w.showDialog(Gin, 'right', '设置你的信息', null, true, null, '', '', '', 180);
+                Bos.title = "选择自动回复;双击设置";
+                var texts = new Array("感谢楼主分享,收下了",
+                    "楼主说的对",
+                    "大佬牛B,膜拜",
+                    "酱油党路过,并水了一帖");
+                for (var i = 0; i < texts.length; i++) {
+                    var option = document.createElement("option");
+                    option.setAttribute("value", i);
+                    option.appendChild(document.createTextNode(texts[i]));
+                    Bos.appendChild(option);
+                }
+                Bos.options[0].selected = true;
+                //按钮
+                var btn = document.createElement("button");
+                btn.textContent = "自动回复";
+                btn.id = "mUA_btn";
+                btn.onclick = addText;
+
+                function addText() {
+                    var fpmessage = document.getElementById("fastpostmessage");
+                    //快捷回复(最下面那个)
+                    if (fpmessage) {
+                        fastpostmessage.textContent = Bos.options[Bos.selectedIndex].text;
+                    }
+                    //独立回复界面
+                    else if (document.getElementById("e_iframe").contentWindow) {
+                        var e_iframe = document.getElementById("e_iframe").contentWindow.document.body;
+                        e_iframe.textContent = Bos.options[Bos.selectedIndex].text;
                     }
                 }
+
+                if (bar) {
+                    bar.appendChild(Bos);
+                    bar.appendChild(btn);
+                    mess(pos.message);
+                };
+
+                $('mUA').onchange = addText;
 
                 //if(getcookie('fastpostrefresh') == 1) {$('mUA').checked=true;}
 
@@ -119,8 +142,7 @@ animation:yu 6s -1 alternate;} \
                 }
 
             }
-        }, false
-    );
+        }, false);
 
     /* （支持：Opera12；兼容其它C/F；系统DZ）
      *  好尾巴，你值得拥有.
