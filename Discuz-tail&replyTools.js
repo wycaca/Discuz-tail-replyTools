@@ -5,9 +5,8 @@
 // @namespace      Discuz-tail&replyTools
 // @description    Discuz Tail & reply tool
 // @description:zh-cn    Discuz小尾巴和快捷回复工具
-// @version        1.0
+// @version        1.1
 // @create         2013-01-19
-// @lastmodified   2019-02-16
 // @include        http*/thread*
 // @include        http*forum.php?mod=viewthread&tid=*
 // @include        http*forum.php?mod=post&action=reply&fid=*
@@ -17,9 +16,6 @@
 // ==/UserScript==
 
 (function () {
-    window.addEventListener(
-        "DOMContentLoaded",
-        function () {
             var _Q = function (d) {
                 return document.querySelector(d)
             };
@@ -143,7 +139,6 @@
                 }
 
             }
-        }, false);
 
     /* （支持：Opera12；兼容其它C/F；系统DZ）
      *  好尾巴，你值得拥有.
